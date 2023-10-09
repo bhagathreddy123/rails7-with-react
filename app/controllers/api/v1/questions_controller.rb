@@ -1,7 +1,11 @@
 class Api::V1::QuestionsController < ApplicationController 
 	protect_from_forgery with: :null_session	
 	def index
-		@questions = Question.all
+		if params[:skill].present?
+		  @questions = Question.where(skill: params[:skill])
+		else
+		  @questions = Question.all
+		end
 		render json: @questions, status: :ok
 	end
 

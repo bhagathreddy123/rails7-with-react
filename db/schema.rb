@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_08_155118) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_09_074426) do
   create_table "questions", force: :cascade do |t|
     t.string "title"
     t.string "ans"
@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_08_155118) do
     t.datetime "updated_at", null: false
     t.integer "likes_count", default: 0
     t.integer "dislikes_count", default: 0
+    t.string "skill"
   end
 
 end
