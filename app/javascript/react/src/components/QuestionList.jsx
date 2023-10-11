@@ -4,17 +4,16 @@ import * as ReactDom from 'react-dom'
 import QuestionDetail from './QuestionDetail'
 import EmptyQuestionMessage from './EmptyQuestionMessage'
 import Loader from './Loader'
+import NewQuestion from './NewQuestion'
 
 const QuestionList = () => {
 	const questionsTags = [
-      { label: 'All', value: 0 },
-      { label: 'Ruby', value: 1 },
-      { label: 'Rails', value: 2 },
-      { label: 'JavaScript', value: 3 },
-      { label: 'Typescript', value: 4 },
-      { label: 'React', value: 5 }
+      { label: 'Ruby', value: 0 },
+      { label: 'Rails', value: 1 },
+      { label: 'JavaScript', value: 2 },
+      { label: 'Typescript', value: 3 },
+      { label: 'React', value: 4 }
 	]
-
 	const [questionsList, setQuestionsList] = useState([])
 	const [selectedOption, setSelectedOption] = useState(questionsTags[0].value)
 	const [isShowAlert, SetIsShowAlert] = useState(false)
@@ -63,6 +62,9 @@ const QuestionList = () => {
 		<div className="row">
 			<div className="col-lg-10 mx-auto">
 			 <p className="lead fw-bold">Filter Questions by Answers</p>
+			<button type="button" className="btn btn-primary mt-3 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Contribute Your Question
+            </button>
 			 <select className="form-select form-select-lg" value={selectedOption}
 			  onChange={event => updateSelectedItem(event)}>
 			 {questionsTags.map(tag=>(
@@ -75,7 +77,8 @@ const QuestionList = () => {
 			    ) : <Loader isShowLoader={isShowLoader} />
 		     }
 		     { isShowAlert && <EmptyQuestionMessage tagname={questionsTags[selectedOption].label}/>}
-			</div>		
+			</div>
+			<NewQuestion />		
 	   </div>	
 	)
 
