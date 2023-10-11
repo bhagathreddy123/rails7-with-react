@@ -1,5 +1,6 @@
 class Api::V1::QuestionsController < ApplicationController 
 	protect_from_forgery with: :null_session	
+	
 	def index
 		if params[:skill].present?
 		  @questions = Question.where(skill: params[:skill])
@@ -18,5 +19,20 @@ class Api::V1::QuestionsController < ApplicationController
 
 		end
 		render json: @question, status: :ok
+	end
+
+	def create
+	  @question = Question.new(question_params)
+	  if @question.save
+		render json: {data: @question, status: 'success' }, status: :ok
+	  else
+		render json: {data: @question.errors.full_messages, status: 'failure' }, status: :unprocessable_entity
+	  end 
+    end
+
+	private
+
+	def question_params
+		params.require(:question).permit(:title, :ans, :skill)
 	end
 end

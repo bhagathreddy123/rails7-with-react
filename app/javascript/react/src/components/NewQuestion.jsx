@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {useState, useEffect } from 'react'
 import * as ReactDOM from 'react-dom'
+import ServerSideError from './ServerSideError'
 
 const NewQuestion = () => {
 	const questionsTags = [
@@ -11,18 +12,48 @@ const NewQuestion = () => {
       { label: 'React', value: "React" }
 	]
 
+	const [isServerSideError, setIsServerSideError] = useState(false)
+	const [serverErrors, setServerErrors] = useState([])
+
+
 	const [formField, setFormField] = useState({
-		title: ''
-		tag: questionsTags[0].value
+		title: '',
+		skill: questionsTags[0].value
 	})
 
 	const handleQuestionSubmit = (event) => {
       event.preventDefault();
       console.log(formField)
+      createQuestion(formField)
     }
 
     const handleFormFields = (event) => {
       setFormField({ ...formField, [event.target.name]: event.target.value})
+    }
+   
+
+   const createQuestion = (data) => {
+    	fetch(`/api/v1/questions`, {
+    		method: 'POST',
+    		headers: {
+    			'Content-Type': 'application/json'
+    		},
+    		body: JSON.stringify(data)
+    	})
+    	.then((response) => response.json())
+    	.then((data) => {
+    		console.log('Success:', data)
+    		if(data['status'] === 'failure'){
+    			setIsServerSideError(true)
+    			setServerErrors(data['data'])
+    		} else {
+    			setIsServerSideError(false)
+    			setServerErrors([])
+    		}
+    	})
+    	.catch((error) => {
+    		console.log('Error:', error)
+    	})
     }
 
 	return(
@@ -36,16 +67,18 @@ const NewQuestion = () => {
 		      </div>
 		        <form onSubmit={handleQuestionSubmit}>
 			      <div className="modal-body">
+			      { isServerSideError && <ServerSideError errors={serverErrors} />}
 			        <div className="form-group">
 			           <label className="form-label mt-3 mb-3"> Title</label>
-			           <input type="text" className="form-control form-control-lg rounded-0" value={title}
+			           <input type="text" className="form-control form-control-lg rounded-0" value={formField.title}
 			            onChange={event => handleFormFields(event)} name="title" />
 			        </div>
 			        <div className="form-group">
 			           <label className="form-label mt-3 mb-3"> Question Tag</label>
-			           <select className="form-select form-slect-lg rounded-0" value={tag} onChange={ event => handleFormFields(event}} name="tag">
-			           	{ questionsTags.map(tag => (
-			           		<option key={tag.value} value={tag.value}>{tag.label}</option>
+			           <select className="form-select form-slect-lg rounded-0" value={formField.skill}
+			            onChange={ event => handleFormFields(event)} name="skill">
+			           	{ questionsTags.map(skill => (
+			           		<option key={skill.value} value={skill.value}>{skill.label}</option>
 			           		))}
 			           </select>
 			        </div>
